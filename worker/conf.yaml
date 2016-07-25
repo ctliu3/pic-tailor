@@ -1,0 +1,3 @@
+master_addr: "127.0.0.1:8089"
+ping_interval: 1000
+cpu_util: 0.6
