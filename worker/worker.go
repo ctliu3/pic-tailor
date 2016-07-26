@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	// "github.com/ctliu3/tailor/worker"
 	"github.com/gorilla/mux"
 	"image"
 	_ "image/jpeg"
@@ -9,19 +10,13 @@ import (
 	"log"
 	"net/http"
 	"path/filepath"
-	"runtime"
+	"reflect"
 	"time"
 )
 
 const (
 	CONFIG_FILE = "conf.yaml"
 )
-
-type CPUOption struct {
-	NumCPUCore int
-	OSType     string
-	utils      []float32
-}
 
 var (
 	config *Config
@@ -53,10 +48,11 @@ func initialize() {
 }
 
 func connectMaster() {
-	var option CPUOption
-	option.NumCPUCore = runtime.NumCPU()
-	option.OSType = runtime.GOOS
-	fmt.Printf("%v", option)
+	cpuInfo, err := getCPUInfo()
+	if err != nil {
+	}
+	fmt.Printf("%v", cpuInfo)
+	fmt.Printf("%v", reflect.TypeOf(cpuInfo))
 }
 
 func monitorCPU() {
