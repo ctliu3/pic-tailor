@@ -28,3 +28,6 @@ _testmain.go
 
 # Executable file
 *.bin
+
+# Temp file
+*.swp

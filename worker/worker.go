@@ -8,9 +8,12 @@ import (
 	_ "image/jpeg"
 	_ "image/png"
 	"log"
+	"math/rand"
 	"net/http"
+	"os"
+	"os/signal"
 	"path/filepath"
-	"reflect"
+	"syscall"
 	"time"
 )
 
@@ -23,12 +26,21 @@ var (
 )
 
 func main() {
+	sigs := make(chan os.Signal, 1)
+	signal.Notify(sigs, syscall.SIGHUP, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT)
+	go func() {
+		s := <-sigs
+		log.Printf("Receive sigal %v, bye:-(", s)
+		os.Exit(0)
+	}()
+
 	initialize()
 
 	router := mux.NewRouter()
 	router.HandleFunc("/info", info).Methods("GET")
 
-	go connectMaster()
+	go sendHearBeat()
+
 	err := http.ListenAndServe(":8090", router)
 	if err != nil {
 		log.Fatal("Start server err: ", err)
@@ -40,19 +52,30 @@ func initialize() {
 	if err != nil {
 		panic(err)
 	}
-	config, err := loadConf(filename)
+	config, err = loadConf(filename)
 	if err != nil {
 		panic(err)
 	}
 	log.Printf("config: %v", config)
 }
 
-func connectMaster() {
-	cpuInfo, err := getCPUInfo()
-	if err != nil {
+func sendHearBeat() {
+	var retry int32 = 0
+
+	for {
+		cpuInfo, err := getCPUInfo()
+		if err != nil {
+			log.Printf("%v", err)
+			if retry == config.MaxRetry {
+				break
+			}
+			retry += 1
+		}
+		log.Printf("cpu info %v", cpuInfo)
+		time.Sleep(time.Second * time.Duration(rand.Int31n(config.PingInterval)))
 	}
-	fmt.Printf("%v", cpuInfo)
-	fmt.Printf("%v", reflect.TypeOf(cpuInfo))
+
+	log.Fatal("Reach max retry times, shut down.")
 }
 
 func monitorCPU() {
