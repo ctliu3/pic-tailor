@@ -1,2 +1,2 @@
-tailor
+pic-tailor
 ===
