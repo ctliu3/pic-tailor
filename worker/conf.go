@@ -11,6 +11,7 @@ type Config struct {
 	PingInterval int32   `yaml:"ping_interval"` // seconds
 	CPUUtil      float32 `yaml:"cpu_util"`      // float in (0, 1)
 	MaxRetry     int32   `yaml:"max_retry"`
+	WorkerPort   string  `yaml:"worker_port"`
 }
 
 func loadConf(filename string) (*Config, error) {

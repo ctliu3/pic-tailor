@@ -79,7 +79,7 @@ func parseStatSample() (float64, float64, error) {
 			}
 			total += val
 		} else {
-			return 0, 0, fmt.Errorf("parse cpu stat err: %v", err)
+			return 0, 0, fmt.Errorf("Parse cpu stat err: %v", err)
 		}
 	}
 	return idle, total, nil
