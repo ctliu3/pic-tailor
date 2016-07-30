@@ -29,6 +29,7 @@ var (
 	ErrUnsupportedOps      = NewError("Unsupported image operation", Unsupported)
 	ErrUnknown             = NewError("Unknown error", Unknown)
 	ErrInernalError        = NewError("Internal error", InternalError)
+	ErrInvalidParametr     = NewError("Invalid parameter", Invalid)
 )
 
 func (e Error) JSON() []byte {

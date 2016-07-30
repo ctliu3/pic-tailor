@@ -13,7 +13,6 @@ import (
 
 	. "github.com/ctliu3/pic-tailor/util"
 	"github.com/ctliu3/pic-tailor/worker/pic"
-	"github.com/nfnt/resize"
 )
 
 func apiMeta(w http.ResponseWriter, r *http.Request) {
@@ -49,33 +48,39 @@ func apiImage(w http.ResponseWriter, r *http.Request) {
 		HTTPResponse(w, 400, ErrEmptyBody)
 		return
 	}
+
 	query := r.URL.Query()
-	if _, ok := query["op"]; ok {
-		// switch op {
-		// case pic.RESIZE:
-		// case pic.CROP:
-		// }
-	} else {
+	var processed image.Image
+
+	switch op := query.Get("op"); op {
+	case pic.RESIZE:
+		opt, err := ParseResizeOption(&query)
+		if err != nil {
+			log.Printf("Parse query parameter err: %v", err)
+			HTTPResponse(w, 400, ErrInvalidParametr)
+			return
+		}
+		resized, err := pic.ImgResize(imageData, opt)
+		if err != nil {
+			log.Printf("Resize image err: %v", err)
+			HTTPResponse(w, 500, ErrInernalError)
+			return
+		}
+		processed = resized
+	case pic.CROP:
+		log.Printf("=== %v\n", op)
+	default:
+		log.Printf("Invalid operation: %v", op)
 		HTTPResponse(w, 400, ErrUnsupportedOps)
 		return
 	}
 
-	log.Printf("%v", r.URL.Query())
-	start := time.Now()
-	img, _, err := image.Decode(imageData)
-	resized := resize.Resize(300, 300, img, resize.Bicubic)
-	elapsed := time.Since(start)
-	if err != nil {
-		HTTPResponse(w, 400, ErrDecode)
+	buf := new(bytes.Buffer)
+	if err := jpeg.Encode(buf, processed, nil); err != nil {
+		log.Printf("Encode image err: %v", err)
+		HTTPResponse(w, 500, ErrInernalError)
 		return
 	}
-	log.Printf("size: %v, elapsed: %v", resized.Bounds(), elapsed)
 
-	buf := new(bytes.Buffer)
-	if err = jpeg.Encode(buf, resized, nil); err != nil {
-	}
-
-	if _, err = w.Write(buf.Bytes()); err != nil {
-	}
-	w.WriteHeader(http.StatusOK)
+	HTTPResponse(w, 200, buf.Bytes())
 }

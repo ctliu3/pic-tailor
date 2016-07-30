@@ -6,7 +6,6 @@ import (
 )
 
 func HTTPResponse(w http.ResponseWriter, httpCode int, msg interface{}) error {
-	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(httpCode)
 
 	switch m := msg.(type) {
@@ -15,6 +14,7 @@ func HTTPResponse(w http.ResponseWriter, httpCode int, msg interface{}) error {
 	case []byte:
 		w.Write([]byte(m))
 	case Error:
+		w.Header().Set("Content-Type", "application/json")
 		w.Write(m.JSON())
 	default:
 		return fmt.Errorf("illegal message format %v", m)
