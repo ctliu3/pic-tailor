@@ -32,3 +32,6 @@ _testmain.go
 # Temp file
 *.swp
 *.swo
+
+/vendor
+!/vendor/vendor.json
