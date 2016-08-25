@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>pic-tailor monitor</title>
+    <link rel="stylesheet" href="{{ .Static }}css/bootstrap.min.css" type="text/css">
+    <link rel="shortcut icon" href="{{ .Static }}img/favicon.ico">
+  </head>
+  <body>
+    <nav class="navbar navbar-default" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="/">pic-tailor monitor</a>
+        </div>
+        <div class="collapse navbar-collapse">
+        </div>
+      </div>
+    </nav>
+    <div class="container">
+      {{ template "content" . }}
+    </div>
+  </body>
+</html>

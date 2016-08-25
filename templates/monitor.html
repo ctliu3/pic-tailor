@@ -1,0 +1,42 @@
+{{ define "content" }}
+<div class="alert alert-info" role="alert">
+  This page is used to display the utilization of each worker node, you can turn off
+  any node if you want to use it for a more significant task.
+</div>
+
+<div class="panel panel-default">
+  <!-- Default panel contents -->
+  <div class="panel-heading">Worker minitor</div>
+
+  <!-- Table -->
+  <table class="table">
+    <thead> <tr> <th>#</th> <th>IP</th> <th>CPU Util</th> <th>#Processed image</th><th>State</th> </tr> </thead>
+    <tbody>
+      <tr> <th scope=row>1</th> <td>Mark</td> <td>Otto</td>
+        <td>0</td>
+        <td>
+          ON
+        </td>
+      </tr>
+      <tr> <th scope=row>1</th> <td>Mark</td> <td>Otto</td>
+        <td>0</td>
+        <td>
+          ON
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+</div>
+
+<form class="form-inline">
+  <div class="form-group">
+    <div class="input-group">
+      <div class="input-group-addon">Util threshold</div>
+      <input type="text" class="form-control" id="util-thresh" placeholder="0.5">
+    </div>
+  </div>
+  <button type="submit" class="btn btn-primary">Refresh</button>
+</form>
+
+{{ end }}
